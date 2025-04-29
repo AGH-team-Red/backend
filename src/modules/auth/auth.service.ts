@@ -1,13 +1,13 @@
 import { AuthService } from './types';
-import { UsersRepository } from '../users/types';
-import bs58 from 'bs58';
-import nacl from 'tweetnacl';
+import { UsersRepository } from 'modules/users/types';
+import { bs58Client } from 'libs/bs58-client';
+import { naclClient } from 'libs/nacl-client';
 
 const getAuthService = (usersRepository: UsersRepository): AuthService => {
   const nonces = new Map<string, string>();
 
   const encodeNonce = async (publicKey: string): Promise<string> => {
-    const nonce = bs58.encode(nacl.randomBytes(32));
+    const nonce = bs58Client.encode(naclClient.randomBytes(32));
 
     nonces.set(publicKey, nonce);
 

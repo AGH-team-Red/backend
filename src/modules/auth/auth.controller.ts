@@ -1,9 +1,9 @@
 import { AuthController, AuthService } from './types';
 import { Request, Response } from 'express';
-import { bs58Client } from '../libs/bs58-client';
-import { jwtClient, StringValue } from '../libs/jwt-client';
-import { getEnv } from '../utils/env';
-import { naclClient } from '../libs/nacl-client';
+import { bs58Client } from 'libs/bs58-client';
+import { jwtClient, StringValue } from 'libs/jwt-client';
+import { getEnv } from 'utils/env';
+import { naclClient } from 'libs/nacl-client';
 
 const getAuthController = (authService: AuthService): AuthController => {
   const getNonce = async (req: Request, res: Response): Promise<void> => {

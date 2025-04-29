@@ -1,11 +1,11 @@
 import { Application } from 'express';
-import { getAuthController } from './auth/auth.controller';
-import { getAuthRoutes } from './auth/auth.routes';
-import { getAuthService } from './auth/auth.service';
-import { getUsersRepository } from './users/users.repository';
-import { getUsersService } from './users/users.service';
-import { getUsersController } from './users/users.controller';
-import { getUsersRoutes } from './users/users.routes';
+import { getAuthController } from 'modules/auth/auth.controller';
+import { getAuthRoutes } from 'modules/auth/auth.routes';
+import { getAuthService } from 'modules/auth/auth.service';
+import { getUsersRepository } from 'modules/users/users.repository';
+import { getUsersService } from 'modules/users/users.service';
+import { getUsersController } from 'modules/users/users.controller';
+import { getUsersRoutes } from 'modules/users/users.routes';
 
 const registerRoutes = (app: Application): void => {
   const usersRepository = getUsersRepository();

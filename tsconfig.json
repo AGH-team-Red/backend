@@ -11,6 +11,20 @@
     "allowJs": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "allowSyntheticDefaultImports": true
-  },
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "libs/*": [
+        "./src/libs/*"
+      ],
+      "middlewares/*": [
+        "./src/middlewares/*"
+      ],
+      "utils/*": [
+        "./src/utils/*"
+      ],
+      "modules/*": [
+        "./src/modules/*"
+      ]
+    }
+  }
 }
