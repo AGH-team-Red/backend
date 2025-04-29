@@ -1,0 +1,41 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "nodemon",
+    "lint": "eslint src --ext ts --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint src --ext ts --report-unused-disable-directives --max-warnings 0 --fix",
+    "prettier:fix": "prettier --write \"src/**/*.{ts,js,mjs}\"",
+    "prettier:check": "prettier --check \"src/**/*.{ts,js,mjs}\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AGH-team-Red/backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AGH-team-Red/backend/issues"
+  },
+  "homepage": "https://github.com/AGH-team-Red/backend#readme",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.1",
+    "@types/express": "^5.0.1",
+    "eslint": "^9.25.1",
+    "globals": "^16.0.0",
+    "nodemon": "^3.1.10",
+    "prettier": "3.5.3",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.31.1"
+  }
+}
