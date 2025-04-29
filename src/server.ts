@@ -3,8 +3,11 @@ import { registerRoutes } from './register-routes';
 
 const app = express();
 
+app.use(express.json());
+
 registerRoutes(app);
 
-app.listen(4000, () => {
-  console.log('Server running on port 4000');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server listening on http://localhost:${PORT}`);
 });

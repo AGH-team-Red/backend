@@ -11,6 +11,6 @@
     "allowJs": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "allowSyntheticDefaultImports": true,
+    "allowSyntheticDefaultImports": true
   },
 }
