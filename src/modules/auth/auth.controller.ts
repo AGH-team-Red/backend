@@ -4,6 +4,7 @@ import { bs58Client } from 'libs/bs58-client';
 import { jwtClient, StringValue } from 'libs/jwt-client';
 import { getEnv } from 'utils/env';
 import { naclClient } from 'libs/nacl-client';
+import { ServerError } from 'utils/server-error';
 
 const getAuthController = (authService: AuthService): AuthController => {
   const getNonce = async (req: Request, res: Response): Promise<void> => {
@@ -29,14 +30,12 @@ const getAuthController = (authService: AuthService): AuthController => {
     const { publicKey, signature } = req.body;
 
     if (typeof publicKey !== 'string' || typeof signature !== 'string') {
-      res.status(400).json({ error: 'Public key and signature is required.' });
+      throw new ServerError('Public key and signature is required.', 400);
     }
 
     const nonce = authService.getNonce(publicKey);
     if (!nonce) {
-      res.status(400).json({ error: 'No nonce found for this publicKey' });
-
-      return;
+      throw new ServerError('No nonce found for this publicKey', 400);
     }
 
     let pubkeyBytes: Uint8Array, sigBytes: Uint8Array;
@@ -46,16 +45,12 @@ const getAuthController = (authService: AuthService): AuthController => {
       pubkeyBytes = decodedInputs.pubkeyBytes;
       sigBytes = decodedInputs.sigBytes;
     } catch (e) {
-      res.status(400).json({ error: 'Invalid base58 encoding' });
-
-      return;
+      throw new ServerError('Invalid base58 encoding', 400);
     }
 
     const valid = naclClient.signDetachedVerify(nonce, sigBytes, pubkeyBytes);
     if (!valid) {
-      res.status(401).json({ error: 'Signature verification failed' });
-
-      return;
+      throw new ServerError('Signature verification failed', 400);
     }
 
     const expiresIn = getEnv('JWT_EXPIRES_IN', '1h') as StringValue;

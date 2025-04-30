@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LabelingLanguage {
+  pl
+  en
+}
+
+model Order {
+  id               String           @id @default(cuid())
+  name             String
+  description      String
+  startDate        DateTime
+  endDate          DateTime
+  budget           Decimal          @db.Decimal(10, 2)
+  labelingLanguage LabelingLanguage
+  datasetId        String           @unique
+  dataset          Dataset          @relation(fields: [datasetId], references: [id])
+}
+
+model Dataset {
+  id              String           @id @default(cuid())
+  name            String
+  description     String
+  minSamplesCount Int
+  features        DatasetFeature[]
+  Order           Order?
+}
+
+model DatasetFeature {
+  id              String                  @id @default(cuid())
+  name            String
+  description     String
+  imageGuidelines String
+  labelGuidelines String
+  type            String
+  dataset         Dataset                 @relation(fields: [datasetId], references: [id])
+  datasetId       String
+  examples        DatasetFeatureExample[]
+}
+
+model DatasetFeatureExample {
+  id        String         @id @default(cuid())
+  imageUrl  String
+  label     String
+  feature   DatasetFeature @relation(fields: [featureId], references: [id])
+  featureId String
+}
