@@ -25,7 +25,7 @@ interface DatasetFeatures {
   examples: Array<DatasetFeatureExample>;
 }
 
-interface Dataset {
+export interface Dataset {
   name: string;
   description: string;
   minSamplesCount: number;

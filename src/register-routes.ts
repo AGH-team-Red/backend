@@ -11,8 +11,18 @@ import { getOrdersRepository } from 'modules/orders/orders.repository';
 import { getOrdersService } from 'modules/orders/orders.service';
 import { getOrdersController } from 'modules/orders/orders.controller';
 import { getOrderRoutes } from 'modules/orders/orders.routes';
+import { getTasksRepository } from 'modules/tasks/tasks.repository';
+import { getTasksService } from 'modules/tasks/tasks.service';
+import { getTasksController } from 'modules/tasks/tasks.controller';
+import { getTasksRoutes } from 'modules/tasks/tasks.routes';
 
 const registerRoutes = (app: Application, prisma: PrismaClient): void => {
+  const tasksRepository = getTasksRepository(prisma);
+  const tasksService = getTasksService(tasksRepository);
+  const tasksController = getTasksController(tasksService);
+  const tasksRoutes = getTasksRoutes(tasksController);
+  app.use('/tasks', tasksRoutes);
+
   const ordersRepository = getOrdersRepository(prisma);
   const ordersService = getOrdersService(ordersRepository);
   const ordersController = getOrdersController(ordersService);

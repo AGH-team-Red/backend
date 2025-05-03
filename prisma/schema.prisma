@@ -12,6 +12,18 @@ enum LabelingLanguage {
   en
 }
 
+enum TaskType {
+  labeling
+  crossChecking
+}
+
+enum OrderStatus {
+  active
+  pending
+  completed
+  expired
+}
+
 model Order {
   id               String           @id @default(cuid())
   name             String
@@ -31,6 +43,7 @@ model Dataset {
   minSamplesCount Int
   features        DatasetFeature[]
   Order           Order?
+  Task            Task?
 }
 
 model DatasetFeature {
@@ -51,4 +64,12 @@ model DatasetFeatureExample {
   label     String
   feature   DatasetFeature @relation(fields: [featureId], references: [id])
   featureId String
+}
+
+model Task {
+  id          String    @id @default(cuid())
+  datasetId   String    @unique
+  dataset     Dataset   @relation(fields: [datasetId], references: [id])
+  type        TaskType
+  endDate     DateTime
 }
