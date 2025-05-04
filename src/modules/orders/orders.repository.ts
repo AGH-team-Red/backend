@@ -1,5 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-import { OrderDto, OrdersRepository } from 'modules/orders/types';
+import { DatasetFeature, DatasetFeatureExample, Order, PrismaClient, Prisma } from '@prisma/client';
+import { OrdersRepository } from 'modules/orders/types';
+import { GetOrderParams } from 'modules/orders/dto';
 
 const orderIncludes = {
   dataset: {
@@ -14,7 +15,7 @@ const orderIncludes = {
 } as const;
 
 const getOrdersRepository = (prisma: PrismaClient): OrdersRepository => {
-  const getAllOrders = async (): Promise<Array<OrderDto>> => {
+  const getAllOrders = async (): Promise<Array<Order>> => {
     const orders = await prisma.order.findMany({
       include: orderIncludes
     });
@@ -22,7 +23,7 @@ const getOrdersRepository = (prisma: PrismaClient): OrdersRepository => {
     return orders;
   };
 
-  const getOrderById = async (orderId: string): Promise<OrderDto | null> => {
+  const getOrderById = async (orderId: string): Promise<Order | null> => {
     const order = await prisma.order.findUnique({
       where: {
         id: orderId
@@ -33,40 +34,9 @@ const getOrdersRepository = (prisma: PrismaClient): OrdersRepository => {
     return order;
   };
 
-  const createOrder = async (orderDto: OrderDto): Promise<OrderDto> => {
-    const { name, description, startDate, endDate, budget, labelingLanguage, dataset } = orderDto;
-
+  const createOrder = async (orderDto: Prisma.OrderCreateInput): Promise<Order> => {
     const order = await prisma.order.create({
-      data: {
-        name,
-        description,
-        startDate,
-        endDate,
-        budget: budget,
-        labelingLanguage,
-        dataset: {
-          create: {
-            name: dataset.name,
-            description: dataset.description,
-            minSamplesCount: dataset.minSamplesCount,
-            features: {
-              create: dataset.features.map((f) => ({
-                name: f.name,
-                description: f.description,
-                imageGuidelines: f.imageGuidelines,
-                labelGuidelines: f.labelGuidelines,
-                type: f.type,
-                examples: {
-                  create: f.examples.map((e) => ({
-                    imageUrl: e.imageUrl,
-                    label: e.label
-                  }))
-                }
-              }))
-            }
-          }
-        }
-      },
+      data: orderDto,
       include: orderIncludes
     });
 

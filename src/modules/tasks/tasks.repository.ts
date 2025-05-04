@@ -1,5 +1,6 @@
 import { TasksRepository } from 'modules/tasks/types';
 import type { PrismaClient, Task } from '@prisma/client';
+import { CreateTaskDto } from './dto';
 
 const getTasksRepository = (prisma: PrismaClient): TasksRepository => {
   const getAllTasks = async (): Promise<Array<Task>> => {
@@ -8,16 +9,16 @@ const getTasksRepository = (prisma: PrismaClient): TasksRepository => {
     return tasks;
   };
 
-  const getTaskByLabel = async (id: string): Promise<Task | null> => {
+  const getTaskByLabel = async (taskId: string): Promise<Task | null> => {
     const task = await prisma.task.findUnique({
       where: {
-        id
+        id: taskId
       }
     });
 
     return task;
   };
-  const createTaskWithLabel = async (taskDto: Task): Promise<Task> => {
+  const createTaskWithLabel = async (taskDto: CreateTaskDto): Promise<Task> => {
     const task = await prisma.task.create({
       data: taskDto,
       include: {
@@ -27,10 +28,10 @@ const getTasksRepository = (prisma: PrismaClient): TasksRepository => {
 
     return task;
   };
-  const getTaskStatus = async (id: string): Promise<Task | null> => {
+  const getTaskStatus = async (taskId: string): Promise<Task | null> => {
     const task = await prisma.task.findUnique({
       where: {
-        id
+        id: taskId
       }
     });
 

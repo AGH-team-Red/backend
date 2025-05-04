@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { OrderDto, OrderDtoSchema, OrdersController, OrdersService } from 'modules/orders/types';
+import { OrdersController, OrdersService } from 'modules/orders/types';
 import { ServerError } from 'utils/server-error';
+import { CreateOrderSchema, CreateOrderDto, GetOrderParamsSchema } from './dto';
 
 const getOrdersController = (ordersService: OrdersService): OrdersController => {
   const getAllOrders = async (req: Request, res: Response): Promise<void> => {
@@ -18,15 +19,15 @@ const getOrdersController = (ordersService: OrdersService): OrdersController => 
     const order = await ordersService.getOrderById(orderId);
 
     if (!order) {
-      throw new ServerError(`No order found with ${orderId}`, 404);
+      throw new ServerError(`No order found with id: ${orderId}`, 404);
     }
 
     res.json(order);
   };
 
   const createOrder = async (req: Request, res: Response): Promise<void> => {
-    const orderPayload = OrderDtoSchema.parse(req.body);
-    const order = await ordersService.createOrder(orderPayload);
+    const data: CreateOrderDto = CreateOrderSchema.parse(req.body);
+    const order = await ordersService.createOrder(data);
 
     if (!order) {
       throw new ServerError('Unable to create order', 400);

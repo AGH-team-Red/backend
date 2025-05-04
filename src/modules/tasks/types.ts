@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express';
-import { Dataset, Task } from '@prisma/client';
+import { Task } from '@prisma/client';
+import { CreateTaskDto, GetTaskParams } from 'modules/tasks/dto';
 
 export interface TasksController {
   getAllTasks: RequestHandler;
@@ -8,33 +9,16 @@ export interface TasksController {
   getTaskStatus: RequestHandler;
 }
 
-type TaskType = 'labeling' | 'crossChecking';
-
-export interface TaskDto {
-  id: string;
-  dataset: Dataset;
-  type: TaskType;
-  endDate: Date;
-}
-
-export interface TaskStatusDto {
-  id: string;
-  dataset: {
-    name: string;
-    description: string;
-  };
-}
-
 export interface TasksService {
   getAllTasks: () => Promise<Array<Task>>;
-  getTaskByLabel: (id: string) => Promise<Task | null>;
-  createTaskWithLabel: (task: Task) => Promise<Task>;
-  getTaskStatus: (id: string) => Promise<Task | null>;
+  getTaskByLabel: (taskId: string) => Promise<Task | null>;
+  getTaskStatus: (taskId: string) => Promise<Task | null>;
+  createTaskWithLabel: (task: CreateTaskDto) => Promise<Task>;
 }
 
 export interface TasksRepository {
   getAllTasks: () => Promise<Array<Task>>;
-  getTaskByLabel: (id: string) => Promise<Task | null>;
-  createTaskWithLabel: (taskDto: Task) => Promise<Task>;
-  getTaskStatus: (id: string) => Promise<Task | null>;
+  getTaskByLabel: (taskId: string) => Promise<Task | null>;
+  getTaskStatus: (taskId: string) => Promise<Task | null>;
+  createTaskWithLabel: (taskDto: CreateTaskDto) => Promise<Task>;
 }

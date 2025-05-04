@@ -1,4 +1,5 @@
-import { TaskDto, TasksRepository, TasksService, TaskStatusDto } from 'modules/tasks/types';
+import { TasksRepository, TasksService } from 'modules/tasks/types';
+import { CreateTaskDto } from './dto';
 import type { Task } from '@prisma/client';
 
 const getTasksService = (tasksRepository: TasksRepository): TasksService => {
@@ -8,20 +9,20 @@ const getTasksService = (tasksRepository: TasksRepository): TasksService => {
     return task;
   };
 
-  const getTaskByLabel = async (id: string): Promise<Task | null> => {
-    const task = await tasksRepository.getTaskByLabel(id);
+  const getTaskByLabel = async (taskId: string): Promise<Task | null> => {
+    const task = await tasksRepository.getTaskByLabel(taskId);
 
     return task;
   };
 
-  const createTaskWithLabel = async (task: Task): Promise<Task> => {
+  const createTaskWithLabel = async (task: CreateTaskDto): Promise<Task> => {
     const createdTask = await tasksRepository.createTaskWithLabel(task);
 
-    return task;
+    return createdTask;
   };
 
-  const getTaskStatus = async (id: string): Promise<Task | null> => {
-    const task = await tasksRepository.getTaskStatus(id);
+  const getTaskStatus = async (taskId: string): Promise<Task | null> => {
+    const task = await tasksRepository.getTaskStatus(taskId);
 
     return task;
   };

@@ -1,5 +1,6 @@
 import { TasksController, TasksService } from 'modules/tasks/types';
 import { Request, Response } from 'express';
+import { CreateTaskDto, CreateTaskSchema, GetTaskParamsSchema } from 'modules/tasks/dto';
 
 const getTasksController = (tasksService: TasksService): TasksController => {
   const getAllTasks = async (req: Request, res: Response): Promise<void> => {
@@ -13,8 +14,8 @@ const getTasksController = (tasksService: TasksService): TasksController => {
   };
 
   const getTaskByLabel = (req: Request, res: Response): void => {
-    const labelId = req.params.labelId;
-    const task = tasksService.getTaskByLabel(labelId);
+    const taskId = req.params.taskId;
+    const task = tasksService.getTaskByLabel(taskId);
 
     if (!task) {
       res.status(404).send('Not Found');
@@ -24,7 +25,7 @@ const getTasksController = (tasksService: TasksService): TasksController => {
   };
 
   const createTaskWithLabel = (req: Request, res: Response): void => {
-    const task = req.body;
+    const task: CreateTaskDto = CreateTaskSchema.parse(req.body);
     const createdTask = tasksService.createTaskWithLabel(task);
 
     if (!createdTask) {

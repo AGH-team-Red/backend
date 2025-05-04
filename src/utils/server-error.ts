@@ -5,8 +5,6 @@ class ServerError extends Error {
     super(message);
     this.name = this.constructor.name;
 
-    console.log('STATUS', status);
-
     this.status = status || 500;
   }
 }

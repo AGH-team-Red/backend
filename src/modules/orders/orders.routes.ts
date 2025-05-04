@@ -6,7 +6,7 @@ const getOrderRoutes = (ordersController: OrdersController): Router => {
   const router = Router();
 
   router.get('/', withErrorHandling(ordersController.getAllOrders));
-  router.get('/:id', withErrorHandling(ordersController.getOrderById));
+  router.get('/:orderId', withErrorHandling(ordersController.getOrderById));
   router.post('/', withErrorHandling(ordersController.createOrder));
 
   return router;
