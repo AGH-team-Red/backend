@@ -13,9 +13,9 @@ const getTasksController = (tasksService: TasksService): TasksController => {
     res.json(task);
   };
 
-  const getTaskByLabel = (req: Request, res: Response): void => {
+  const getTaskByLabel = async (req: Request, res: Response): Promise<void> => {
     const taskId = req.params.taskId;
-    const task = tasksService.getTaskByLabel(taskId);
+    const task = await tasksService.getTaskByLabel(taskId);
 
     if (!task) {
       res.status(404).send('Not Found');

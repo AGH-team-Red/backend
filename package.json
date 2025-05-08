@@ -7,7 +7,8 @@
     "lint": "eslint src --ext ts --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint src --ext ts --report-unused-disable-directives --max-warnings 0 --fix",
     "prettier:fix": "prettier --write \"src/**/*.{ts,js,mjs}\"",
-    "prettier:check": "prettier --check \"src/**/*.{ts,js,mjs}\""
+    "prettier:check": "prettier --check \"src/**/*.{ts,js,mjs}\"",
+    "seed": "ts-node --transpile-only prisma/seed.ts"
   },
   "repository": {
     "type": "git",

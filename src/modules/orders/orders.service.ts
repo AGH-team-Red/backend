@@ -1,6 +1,5 @@
 import { OrdersRepository, OrdersService } from 'modules/orders/types';
 import { Order, Prisma } from '@prisma/client';
-import { GetOrderParams } from 'modules/orders/dto';
 
 const getOrdersService = (ordersRepository: OrdersRepository): OrdersService => {
   const getAllOrders = async (): Promise<Array<Order>> => {

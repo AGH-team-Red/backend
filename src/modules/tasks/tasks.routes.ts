@@ -6,7 +6,7 @@ const getTasksRoutes = (tasksController: TasksController): Router => {
   const router = Router();
 
   router.get('/', withErrorHandling(tasksController.getAllTasks));
-  router.get('/label/:id', withErrorHandling(tasksController.getTaskByLabel));
+  router.get('/:taskId', withErrorHandling(tasksController.getTaskByLabel));
   router.post('/label/:id', withErrorHandling(tasksController.createTaskWithLabel));
   router.get('/check/:id', withErrorHandling(tasksController.getTaskStatus));
 

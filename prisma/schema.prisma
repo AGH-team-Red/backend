@@ -3,24 +3,14 @@ generator client {
 }
 
 generator zod {
-  provider         = "npx zod-prisma-types"
-  output           = "zod"
+  provider          = "npx zod-prisma-types"
+  output            = "zod"
   useTypeAssertions = true
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-enum LabelingLanguage {
-  pl
-  en
-}
-
-enum TaskType {
-  labeling
-  crossChecking
 }
 
 enum OrderStatus {
@@ -30,52 +20,105 @@ enum OrderStatus {
   expired
 }
 
+enum TaskType {
+  labeling
+  cross_checking
+  taking_picture
+}
+
+enum LabelingLanguage {
+  pl
+  en
+}
+
+model User {
+  id        String  @id @default(uuid())
+  tasks     Task[]
+}
+
 model Order {
-  id               String           @id @default(cuid())
+  id                   String      @id @default(uuid())
+  name                 String
+  startDate            DateTime
+  endDate              DateTime
+  status               OrderStatus @default(pending)
+  budget               Float
+  labelingLanguage     LabelingLanguage
+  datasetDescription   String
+  exampleImageUrl      String
+  imageGuidelines      String
+  minSamplesCount      Int
+  currentSamplesCount  Int         @default(0)
+
+  entryFee             Float?
+  reward               Float?
+  minContributors      Int?
+  contributors         Int?        @default(0)
+
+  features             Feature[]
+  tasks                Task[]
+}
+
+model Feature {
+  id               Int     @id @default(autoincrement())
+  order            Order   @relation(fields: [orderId], references: [id])
+  orderId          String
   name             String
-  description      String
-  startDate        DateTime
-  endDate          DateTime
-  budget           Decimal          @db.Decimal(10, 2)
-  labelingLanguage LabelingLanguage
-  datasetId        String           @unique
-  dataset          Dataset          @relation(fields: [datasetId], references: [id])
-}
-
-model Dataset {
-  id              String           @id @default(cuid())
-  name            String
-  description     String
-  minSamplesCount Int
-  features        DatasetFeature[]
-  Order           Order?
-  Task            Task?
-}
-
-model DatasetFeature {
-  id              String                  @id @default(cuid())
-  name            String
-  description     String
-  imageGuidelines String
-  labelGuidelines String
-  type            String
-  dataset         Dataset                 @relation(fields: [datasetId], references: [id])
-  datasetId       String
-  examples        DatasetFeatureExample[]
-}
-
-model DatasetFeatureExample {
-  id        String         @id @default(cuid())
-  imageUrl  String
-  label     String
-  feature   DatasetFeature @relation(fields: [featureId], references: [id])
-  featureId String
+  labelGuidelines  String
+  exampleLabel     String?
+  featureLabels    FeatureLabel[]
 }
 
 model Task {
-  id          String    @id @default(cuid())
-  datasetId   String    @unique
-  dataset     Dataset   @relation(fields: [datasetId], references: [id])
-  type        TaskType
-  endDate     DateTime
+  id               String        @id @default(uuid())
+  type             TaskType
+  endDate          DateTime
+  estimatedReward  Float
+  assignedTo       User?         @relation(fields: [assignedToId], references: [id])
+  assignedToId     String?
+  order            Order         @relation(fields: [orderId], references: [id])
+  orderId          String
+
+  labelTask        LabelTask?
+  checkTask        CheckTask?
+  pictureTask      PictureTask?
+}
+
+model LabelTask {
+  id            String    @id @default(uuid())
+  task          Task      @relation(fields: [taskId], references: [id])
+  taskId        String    @unique
+  featureLabels FeatureLabel[]
+}
+
+model FeatureLabel {
+  id            Int          @id @default(autoincrement())
+  labelTask     LabelTask    @relation(fields: [labelTaskId], references: [id])
+  labelTaskId   String
+  feature       Feature      @relation(fields: [featureId], references: [id])
+  featureId     Int
+  featureLabel  String
+}
+
+model CheckTask {
+  id            String         @id @default(uuid())
+  task          Task           @relation(fields: [taskId], references: [id])
+  taskId        String         @unique
+  isCorrect     Boolean?
+  checkFeatures CheckFeature[]
+}
+
+model CheckFeature {
+  id          Int        @id @default(autoincrement())
+  checkTask   CheckTask  @relation(fields: [checkTaskId], references: [id])
+  checkTaskId String
+  name        String
+  label       String
+}
+
+model PictureTask {
+  id            String    @id @default(uuid())
+  task          Task      @relation(fields: [taskId], references: [id])
+  taskId        String    @unique
+  exampleImgUrl String?
 }

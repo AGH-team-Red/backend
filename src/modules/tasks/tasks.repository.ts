@@ -4,7 +4,17 @@ import { CreateTaskDto } from './dto';
 
 const getTasksRepository = (prisma: PrismaClient): TasksRepository => {
   const getAllTasks = async (): Promise<Array<Task>> => {
-    const tasks = await prisma.task.findMany();
+    const tasks = await prisma.task.findMany({
+      include: {
+        labelTask: {
+          include: { featureLabels: true }
+        },
+        checkTask: {
+          include: { checkFeatures: true }
+        },
+        pictureTask: true
+      }
+    });
 
     return tasks;
   };
@@ -13,6 +23,19 @@ const getTasksRepository = (prisma: PrismaClient): TasksRepository => {
     const task = await prisma.task.findUnique({
       where: {
         id: taskId
+      },
+      include: {
+        labelTask: {
+          include: {
+            featureLabels: true
+          }
+        },
+        checkTask: {
+          include: {
+            checkFeatures: true
+          }
+        },
+        pictureTask: true
       }
     });
 
@@ -20,10 +43,7 @@ const getTasksRepository = (prisma: PrismaClient): TasksRepository => {
   };
   const createTaskWithLabel = async (taskDto: CreateTaskDto): Promise<Task> => {
     const task = await prisma.task.create({
-      data: taskDto,
-      include: {
-        dataset: true
-      }
+      data: taskDto
     });
 
     return task;
