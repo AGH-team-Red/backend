@@ -26,7 +26,7 @@ const getOrdersController = (ordersService: OrdersService): OrdersController => 
   };
 
   const createOrder = async (req: Request, res: Response): Promise<void> => {
-    const data: CreateOrderDto = CreateOrderSchema.parse(req.body);
+    const data: CreateOrderDto = CreateOrderSchema.parse(req.body.data);
     const order = await ordersService.createOrder(data);
 
     if (!order) {
