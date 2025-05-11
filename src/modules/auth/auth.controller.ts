@@ -29,7 +29,6 @@ const getAuthController = (authService: AuthService): AuthController => {
     }
   };
 
-  // Verify a signed nonce and return a JWT
   const verifySignature = async (req: Request, res: Response): Promise<void> => {
     const { publicKey, signature } = req.body;
     if (typeof publicKey !== 'string' || typeof signature !== 'string') {
