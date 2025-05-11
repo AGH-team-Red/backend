@@ -8,29 +8,32 @@ import { ServerError } from 'utils/server-error';
 
 const getAuthController = (authService: AuthService): AuthController => {
   const getNonce = async (req: Request, res: Response): Promise<void> => {
-    const requestBody = req.body;
+    const { publicKey } = req.body;
 
-    if (typeof requestBody?.publicKey !== 'string') {
+    if (typeof publicKey !== 'string') {
       res.status(400).json({ error: 'Public key is required.' });
     }
 
-    const nonce = await authService.encodeNonce(requestBody.publicKey);
-
+    const nonce = await authService.encodeNonce(publicKey);
     res.json({ nonce });
   };
 
   const decodeInputs = (publicKey: string, signature: string): { pubkeyBytes: Uint8Array; sigBytes: Uint8Array } => {
-    const pubkeyBytes = bs58Client.decode(publicKey);
-    const sigBytes = bs58Client.decode(signature);
+    try {
+      const pubkeyBytes = bs58Client.decode(publicKey);
+      const sigBytes = bs58Client.decode(signature);
 
-    return { pubkeyBytes, sigBytes };
+      return { pubkeyBytes, sigBytes };
+    } catch {
+      throw new ServerError('Invalid base58 encoding', 400);
+    }
   };
 
+  // Verify a signed nonce and return a JWT
   const verifySignature = async (req: Request, res: Response): Promise<void> => {
     const { publicKey, signature } = req.body;
-
     if (typeof publicKey !== 'string' || typeof signature !== 'string') {
-      throw new ServerError('Public key and signature is required.', 400);
+      throw new ServerError('Public key and signature are required.', 400);
     }
 
     const nonce = authService.getNonce(publicKey);
@@ -38,15 +41,7 @@ const getAuthController = (authService: AuthService): AuthController => {
       throw new ServerError('No nonce found for this publicKey', 400);
     }
 
-    let pubkeyBytes: Uint8Array, sigBytes: Uint8Array;
-    try {
-      const decodedInputs = decodeInputs(publicKey, signature);
-
-      pubkeyBytes = decodedInputs.pubkeyBytes;
-      sigBytes = decodedInputs.sigBytes;
-    } catch (e) {
-      throw new ServerError('Invalid base58 encoding', 400);
-    }
+    const { pubkeyBytes, sigBytes } = decodeInputs(publicKey, signature);
 
     const valid = naclClient.signDetachedVerify(nonce, sigBytes, pubkeyBytes);
     if (!valid) {
@@ -60,7 +55,6 @@ const getAuthController = (authService: AuthService): AuthController => {
     });
 
     authService.removeNonce(publicKey);
-
     res.json({ token });
   };
 
