@@ -39,6 +39,8 @@ const registerRoutes = (app: Application, prisma: PrismaClient): void => {
   const authController = getAuthController(authService);
   const authRoutes = getAuthRoutes(authController);
   app.use('/auth', authRoutes);
+
+  console.log('registered routes');
 };
 
 export { registerRoutes };

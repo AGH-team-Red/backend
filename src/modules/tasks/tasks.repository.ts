@@ -35,7 +35,8 @@ const getTasksRepository = (prisma: PrismaClient): TasksRepository => {
             checkFeatures: true
           }
         },
-        pictureTask: true
+        pictureTask: true,
+        order: true
       }
     });
 

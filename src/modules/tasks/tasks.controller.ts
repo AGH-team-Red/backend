@@ -6,6 +6,8 @@ const getTasksController = (tasksService: TasksService): TasksController => {
   const getAllTasks = async (req: Request, res: Response): Promise<void> => {
     const task = await tasksService.getAllTasks();
 
+    console.log('get all tasks ', task);
+
     if (!task) {
       res.status(404).send('Not Found');
     }

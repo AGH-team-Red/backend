@@ -14,12 +14,14 @@ const getAuthController = (authService: AuthService): AuthController => {
       res.status(400).json({ error: 'Public key is required.' });
     }
 
-    const nonce = await authService.encodeNonce(publicKey);
+    const nonce = await authService.encodeNonce(publicKey as string);
+
     res.json({ nonce });
   };
 
   const decodeInputs = (publicKey: string, signature: string): { pubkeyBytes: Uint8Array; sigBytes: Uint8Array } => {
     try {
+      console.log('publicKey', publicKey, 'signature', signature);
       const pubkeyBytes = bs58Client.decode(publicKey);
       const sigBytes = bs58Client.decode(signature);
 
