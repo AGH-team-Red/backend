@@ -1,6 +1,7 @@
 import { TasksRepository, TasksService } from 'modules/tasks/types';
 import { CreateTaskDto } from './dto';
 import type { Task } from '@prisma/client';
+import {calculateReward} from "modules/tasks/reward";
 
 const getTasksService = (tasksRepository: TasksRepository): TasksService => {
   const getAllTasks = async (): Promise<Array<Task>> => {
@@ -16,7 +17,7 @@ const getTasksService = (tasksRepository: TasksRepository): TasksService => {
   };
 
   const createTaskWithLabel = async (task: CreateTaskDto): Promise<Task> => {
-    const createdTask = await tasksRepository.createTaskWithLabel(task);
+      const createdTask = await tasksRepository.createTaskWithLabel(task);
 
     return createdTask;
   };

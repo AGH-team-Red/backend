@@ -22,3 +22,17 @@ export interface TasksRepository {
   getTaskStatus: (taskId: string) => Promise<Task | null>;
   createTaskWithLabel: (taskDto: CreateTaskDto) => Promise<Task>;
 }
+
+export type Task = {
+  durationTimeHours: number;
+  budgetSOL: number;
+  minContributors: number;
+  minSamplesCount: number;
+};
+
+export type RewardScheme = {
+  baseRewardPerSample: number;
+  estimatedRewardPerContributor: number;
+  bonusPool: number;
+  maxRewardPerContributor: number;
+};
